@@ -1,0 +1,14 @@
+name: PythonMapScreen
+version: @version@
+main: dev.moru3.pythonmapscreen.PythonMapScreen
+api-version: 1.16
+authors: [ moru3_48 ]
+description: Minecraftのマップをスクリーンにして映像を再生できます。
+website: https://moru3.dev
+commands:
+  pythonmapscreen:
+    permission: pythonmapscreen.create
+
+permissions:
+  pythonmapscreen.create:
+    default: op
