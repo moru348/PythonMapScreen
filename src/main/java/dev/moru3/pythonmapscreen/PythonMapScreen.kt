@@ -8,7 +8,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.block.Action
 import org.bukkit.event.block.Action.*
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.plugin.Plugin
@@ -16,7 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin
 
 class PythonMapScreen : JavaPlugin() {
 
-    inline fun <reified E: Event> Plugin.executeEvent(crossinline runnable: (event: E) -> Unit) {
+    private inline fun <reified E: Event> Plugin.executeEvent(crossinline runnable: (event: E) -> Unit) {
         val listener = object: Listener {
             @EventHandler
             fun event(event: E) { runnable.invoke(event) }
