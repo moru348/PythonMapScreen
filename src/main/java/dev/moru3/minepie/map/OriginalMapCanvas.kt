@@ -41,4 +41,28 @@ class OriginalMapCanvas: CustomMapCanvas {
             canvas.forEachIndexed { index, byte -> it.setRGB(index%9, index/9, getPixelByArgb(index%9, index/9)) }
         }
     }
+
+    override fun asByteArray(): ByteArray {
+        return canvas.toByteArray()
+    }
+
+    override fun clone(): CustomMapCanvas {
+        val newCanvas = OriginalMapCanvas()
+        newCanvas::class.java.getDeclaredField("canvas").set(newCanvas, canvas.toMutableList())
+        return newCanvas
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if(other is OriginalMapCanvas) {
+            return other.canvas == canvas
+        } else {
+            return false
+        }
+    }
+
+    override fun hashCode(): Int { return canvas.hashCode() }
+
+    init {
+        repeat(128*128) { canvas.add(0) }
+    }
 }

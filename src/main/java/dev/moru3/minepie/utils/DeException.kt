@@ -1,19 +1,26 @@
 package dev.moru3.minepie.utils
 
-class DeException<R>(runnable: ()->R) {
-    private var exception: Exception? = null
+class DeException<R>(runnable: ()->R): IDeException<R> {
+    private lateinit var exception: Exception
     private var result: R? = null
     private var isException = false
 
-    fun thrown(runnable: (Exception) -> Unit): DeException<R> {
-        if(isException) { exception?.also(runnable) }
+    override fun thrown(runnable: (Exception) -> Unit): DeException<R> {
+        if(isException) { exception.also(runnable) }
         return this
     }
 
-    fun run(runnable: (R?)->Unit): DeException<R> {
-        if(isException.not()) {
-            runnable.invoke(result)
-        }
+    fun runAllowNull(runnable: (R?)->Unit): DeException<R> {
+        try {
+            if(isException.not()) { result.also(runnable::invoke) }
+        } catch (_: Exception) { /*パス*/ }
+        return this
+    }
+
+    override fun run(runnable: (R)->Unit): DeException<R> {
+        try {
+            if(isException.not()) { result?.also(runnable::invoke) }
+        } catch (_: Exception) { /*パス*/ }
         return this
     }
 

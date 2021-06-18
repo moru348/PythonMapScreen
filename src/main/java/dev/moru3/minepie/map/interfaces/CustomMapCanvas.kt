@@ -17,4 +17,8 @@ interface CustomMapCanvas {
     fun getPixelByArgb(x: Int, y: Int): Int
 
     fun asImage(): BufferedImage
+
+    fun asByteArray(): ByteArray
+
+    fun clone(): CustomMapCanvas
 }
