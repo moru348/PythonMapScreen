@@ -49,7 +49,6 @@ class PythonMapScreen : JavaPlugin() {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         try {
             if(sender !is Player) { throw IllegalArgumentException("このコマンドはプレイヤーからのみ実行できます。") }
-            
         } catch (e: IllegalArgumentException) {
             e.message?.also(sender::sendMessage)
         }

@@ -1,8 +1,10 @@
 package dev.moru3.pythonmapscreen.map
 
 import dev.moru3.minepie.utils.DeException
+import dev.moru3.minepie.utils.ImageUtil.Companion.resize
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.map.MapPalette
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
@@ -14,6 +16,9 @@ class ScreenManager(pos1: Location, pos2: Location, val file: File, val frameRat
 
     val pos1: Location = pos1.clone()
     val pos2: Location = pos2.clone()
+
+    val height: Int
+    val width: Int
 
     val blockHeight: Int
     val blockWidth: Int
@@ -77,7 +82,30 @@ class ScreenManager(pos1: Location, pos2: Location, val file: File, val frameRat
             .filter { images.first().width!=it.width }
             .forEach(images::remove)
 
-        
+        val imageHeight = images.first().height
+        val imageWidth = images.first().width
+
+        val mag: Int = ((blockHeight*128)/imageHeight)
+            .takeIf { imageWidth*it<blockWidth*128 }?:(blockWidth*128)/imageWidth
+
+        height = imageHeight*mag
+        width = imageWidth*mag
+
+        val marginTop = ((blockHeight*128)-height)/2
+        val marginLeft = ((blockWidth*128)-width)/2
+
+        images.forEach {
+            val frame = mutableListOf<Byte>()
+            repeat((blockHeight*128)*(blockWidth*128)) { frame.add(1) }
+            val image = it.resize(width, height)
+            for(height in 0 until height) { for(width in 0 until width) {
+                val color = image.getRGB(width, height)
+                frame[((height+marginTop)*this.width)+(width+marginLeft)] = MapPalette.matchColor(color and 0x00ff0000 shr 16, color and 0x0000ff00 shr 8, color and 0x000000ff)
+            } }
+            frames.add(frame)
+        }
+
+
     }
 }
 
