@@ -2,6 +2,7 @@ package dev.moru3.pythonmapscreen.map
 
 import dev.moru3.minepie.thread.MultiThreadRunner
 import dev.moru3.minepie.utils.DeException
+import dev.moru3.pythonmapscreen.map.Direction.*
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.block.BlockFace
@@ -47,21 +48,21 @@ class ScreenManager(plugin: Plugin ,pos1: Location, pos2: Location, val file: Fi
         //directionの情報が正しいか、確かめた上、heightとwidthを設定。
         when {
             this.pos2.blockZ-this.pos1.blockZ==0 -> {
-                if(direction !in listOf(Direction.NORTH, Direction.SOUTH)) {
+                if(direction !in listOf(NORTH, SOUTH)) {
                     throw IllegalArgumentException("pos1 pos2 and direction do not match.")
                 }
                 blockHeight = (this.pos2.blockY - this.pos1.blockY)+1
                 blockWidth = (this.pos2.blockX - this.pos1.blockX)+1
             }
             this.pos2.blockX-this.pos1.blockX==0 -> {
-                if(direction !in listOf(Direction.EAST, Direction.WEST)) {
+                if(direction !in listOf(EAST, WEST)) {
                     throw IllegalArgumentException("pos1 pos2 and direction do not match.")
                 }
                 blockHeight = (this.pos2.blockY - this.pos1.blockY)+1
                 blockWidth = (this.pos2.blockZ - this.pos1.blockZ)+1
             }
             else -> {
-                if(direction !in listOf(Direction.DOWN, Direction.UP)) {
+                if(direction !in listOf(DOWN, UP)) {
                     throw IllegalArgumentException("pos1 pos2 and direction do not match.")
                 }
                 blockHeight = (this.pos2.blockX - this.pos1.blockX)+1
@@ -70,7 +71,7 @@ class ScreenManager(plugin: Plugin ,pos1: Location, pos2: Location, val file: Fi
         }
 
         MultiThreadRunner {
-            var images = mutableListOf<BufferedImage>()
+            val images = mutableListOf<BufferedImage>()
             if(file.isFile) {
                 DeException { ImageIO.read(file) }
                     .thrown { throw IllegalArgumentException("The variable file must be the directory where the image is stored, or the image.") }
@@ -126,10 +127,8 @@ class ScreenManager(plugin: Plugin ,pos1: Location, pos2: Location, val file: Fi
                 byteFrames.values.forEach {
                     val result = mutableListOf<Byte>()
 
-                    Bukkit.broadcastMessage("$w : $h")
-
                     for(wi in 0 until 128) { for(he in 0 until 128) {
-                        result.add(it[w+wi+((h+he)*blockWidth*128)])
+                        result.add(it[w+wi+((h+he)*blockWidth*128)])//tODO
                     } }
 
                     videoFrames.add(result)
@@ -137,16 +136,21 @@ class ScreenManager(plugin: Plugin ,pos1: Location, pos2: Location, val file: Fi
 
                 Bukkit.getScheduler().runTask(plugin, Runnable {
                     val itemFrame = world.spawnEntity(this.pos1.clone()
-                        .also { when(direction.type) {
-                            1.toByte() -> {
-                                pos1.clone().apply {  }
-                            }
-                            2.toByte() -> {
+                        .also { when(direction) {
+                            EAST -> {//TODO
 
                             }
-                            else -> {
-                                throw IllegalArgumentException("サポートしていません。")
+                            WEST -> {
+
                             }
+                            NORTH -> {
+
+                            }
+                            SOUTH -> {
+
+                            }
+                            UP -> TODO()
+                            DOWN -> TODO()
                         } }, EntityType.ITEM_FRAME) as ItemFrame
                     itemFrame.isInvulnerable = true
                     itemFrame.itemDropChance = 0F
