@@ -29,5 +29,11 @@ class NmsUtils {
                 .getMethod("asNMSCopy", ItemStack::class.java)
                 .invoke(null, this)
         }
+        fun Player.sendPacket(packet: Any) {
+            val nmsPlayer = this.asNmsPlayer()
+            val con = nmsPlayer.javaClass.getField("playerConnection").get(nmsPlayer)
+            val sendPacket = getNmsClass("PlayerConnection").getMethod("sendPacket", getNmsClass("Packet"))
+            sendPacket.invoke(con, packet)
+        }
     }
 }

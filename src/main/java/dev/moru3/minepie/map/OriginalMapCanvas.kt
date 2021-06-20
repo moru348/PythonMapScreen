@@ -38,7 +38,7 @@ class OriginalMapCanvas: CustomMapCanvas {
 
     override fun asImage(): BufferedImage {
         return BufferedImage(127, 127, BufferedImage.TYPE_INT_RGB).also {
-            canvas.forEachIndexed { index, byte -> it.setRGB(index%9, index/9, getPixelByArgb(index%9, index/9)) }
+            canvas.forEachIndexed { index, _ -> it.setRGB(index%128, index/128, getPixelByArgb(index%128, index/128)) }
         }
     }
 
@@ -48,7 +48,7 @@ class OriginalMapCanvas: CustomMapCanvas {
 
     override fun clone(): CustomMapCanvas {
         val newCanvas = OriginalMapCanvas()
-        newCanvas::class.java.getDeclaredField("canvas").set(newCanvas, canvas.toMutableList())
+        newCanvas::class.java.getDeclaredField("canvas").also { it.isAccessible = true }.set(newCanvas, canvas.toMutableList())
         return newCanvas
     }
 
@@ -63,6 +63,6 @@ class OriginalMapCanvas: CustomMapCanvas {
     override fun hashCode(): Int { return canvas.hashCode() }
 
     init {
-        repeat(128*128) { canvas.add(0) }
+        repeat(128*128) { canvas.add(1) }
     }
 }
